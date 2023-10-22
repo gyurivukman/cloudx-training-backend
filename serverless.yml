@@ -8,8 +8,11 @@ provider:
   # memorySize: 512
   httpApi:
     cors: true
-  # iam:
-  #   role: arn:aws:iam::AccountNumber:role/MyROleName
+  iam:
+    role: arn:aws:iam::135024919331:role/lambda_dynamo_access
+  environment:
+    PRODUCTS_TABLE: products
+    STOCKS_TABLE: stocks
 
 functions:
   getProductList:
@@ -28,3 +31,11 @@ functions:
       - httpApi:
           path: /products/{productId}
           method: GET
+  createProduct:
+    url: true
+    handler: handler.createProduct
+    description: Creates a product based on the body.
+    events:
+      - httpApi:
+          path: /products
+          method: POST

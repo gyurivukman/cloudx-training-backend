@@ -1,69 +1,77 @@
 "use strict";
+const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
+const {
+  DynamoDBDocumentClient,
+  ScanCommand,
+  GetCommand,
+  PutCommand,
+} = require("@aws-sdk/lib-dynamodb");
+const dbClient = new DynamoDBClient({ region: "eu-central-1" });
+const uuid = require("uuid");
 
-const products = [
-  {
-    count: 4,
-    description: "Short Product Description1",
-    id: "7567ec4b-b10c-48c5-9345-fc73c48a80aa",
-    price: 2.4,
-    title: "ProductOne",
-  },
-  {
-    count: 6,
-    description: "Short Product Description3",
-    id: "7567ec4b-b10c-48c5-9345-fc73c48a80a0",
-    price: 10,
-    title: "ProductNew",
-  },
-  {
-    count: 7,
-    description: "Short Product Description2",
-    id: "7567ec4b-b10c-48c5-9345-fc73c48a80a2",
-    price: 23,
-    title: "ProductTop",
-  },
-  {
-    count: 12,
-    description: "Short Product Description7",
-    id: "7567ec4b-b10c-48c5-9345-fc73c48a80a1",
-    price: 15,
-    title: "ProductTitle",
-  },
-  {
-    count: 7,
-    description: "Short Product Description2",
-    id: "7567ec4b-b10c-48c5-9345-fc73c48a80a3",
-    price: 23,
-    title: "Product",
-  },
-  {
-    count: 8,
-    description: "Short Product Description4",
-    id: "7567ec4b-b10c-48c5-9345-fc73348a80a1",
-    price: 15,
-    title: "ProductTest",
-  },
-  {
-    count: 2,
-    description: "Short Product Descriptio1",
-    id: "7567ec4b-b10c-48c5-9445-fc73c48a80a2",
-    price: 23,
-    title: "Product2",
-  },
-  {
-    count: 3,
-    description: "Short Product Description7",
-    id: "7567ec4b-b10c-45c5-9345-fc73c48a80a1",
-    price: 15,
-    title: "ProductName",
-  },
-];
+const PRODUCTS_TABLE = process.env.PRODUCTS_TABLE;
+const STOCKS_TABLE = process.env.STOCKS_TABLE;
 
-module.exports.getProductList = function (event, context, callback) {
-  callback(null, JSON.stringify(products));
+const docClient = DynamoDBDocumentClient.from(dbClient);
+
+module.exports.getProductList = async function (event, context, callback) {
+  const getProductsCommand = new ScanCommand({ TableName: PRODUCTS_TABLE });
+  const getStocksCommand = new ScanCommand({ TableName: STOCKS_TABLE });
+
+  const productsResponse = await docClient.send(getProductsCommand);
+  const stocksResponse = await docClient.send(getStocksCommand);
+
+  const responseData = productsResponse.Items.map((product) => {
+    const stockCount = stocksResponse.Items.find(
+      (stock) => stock.product_id == product.id
+    );
+    return { ...product, count: stockCount.count };
+  });
+
+  callback(null, JSON.stringify(responseData));
 };
 
-module.exports.getProductsById = function(event, context, callback){
-  const result = products.find(p => p.id === event.pathParameters.productId);
-  callback(null, JSON.stringify(result));
-}
+module.exports.getProductsById = async function (event, context, callback) {
+  const productId = event.pathParameters.productId;
+  const getProductCommand = new GetCommand({
+    TableName: PRODUCTS_TABLE,
+    Key: { id: productId },
+  });
+  const getStockCommand = new GetCommand({
+    TableName: STOCKS_TABLE,
+    Key: { product_id: productId },
+  });
+
+  const productsResponse = await docClient.send(getProductCommand);
+  const stocksResponse = await docClient.send(getStockCommand);
+
+  const responseData = {
+    ...productsResponse.Item,
+    count: stocksResponse.Item.count,
+  };
+
+  callback(null, JSON.stringify(responseData));
+};
+
+module.exports.createProduct = async function (event, context, callback) {
+  const { title, description, count, price } = JSON.parse(event.body);
+  const generatedID = uuid.v4();
+
+  const putProduct = new PutCommand({
+    TableName: PRODUCTS_TABLE,
+    Item: { id: generatedID, title, description, price },
+  });
+
+  const putStock = new PutCommand({
+    TableName: STOCKS_TABLE,
+    Item: { product_id: generatedID, count },
+  });
+
+  await docClient.send(putProduct);
+  await docClient.send(putStock);
+
+  callback(
+    null,
+    JSON.stringify({ id: generatedID, title, description, count, price })
+  );
+};
