@@ -1,0 +1,41 @@
+service: cloudx-backend
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: eu-central-1
+  # memorySize: 512
+  httpApi:
+    cors: true
+  iam:
+    role: arn:aws:iam::135024919331:role/lambda_dynamo_access
+  environment:
+    PRODUCTS_TABLE: products
+    STOCKS_TABLE: stocks
+
+functions:
+  getProductList:
+    url: true
+    handler: handler.getProductList
+    description: Lambda function to retrieve a product list.
+    events:
+      - httpApi:
+          path: /products
+          method: GET
+  getProductsById:
+    url: true
+    handler: handler.getProductsById
+    description: Retrieves a single product based on an id parameter.
+    events:
+      - httpApi:
+          path: /products/{productId}
+          method: GET
+  createProduct:
+    url: true
+    handler: handler.createProduct
+    description: Creates a product based on the body.
+    events:
+      - httpApi:
+          path: /products
+          method: POST

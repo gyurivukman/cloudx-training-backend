@@ -1,0 +1,834 @@
+{
+  "service": {
+    "service": "cloudx-backend",
+    "serviceObject": {
+      "name": "cloudx-backend"
+    },
+    "provider": {
+      "name": "aws",
+      "runtime": "nodejs18.x",
+      "region": "eu-central-1",
+      "httpApi": {
+        "cors": true
+      },
+      "iam": {
+        "role": "arn:aws:iam::135024919331:role/lambda_dynamo_access"
+      },
+      "environment": {
+        "PRODUCTS_TABLE": "products",
+        "STOCKS_TABLE": "stocks"
+      },
+      "stage": "dev",
+      "versionFunctions": true,
+      "compiledCloudFormationTemplate": {
+        "AWSTemplateFormatVersion": "2010-09-09",
+        "Description": "The AWS CloudFormation template for this Serverless application",
+        "Resources": {
+          "ServerlessDeploymentBucket": {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+              "BucketEncryption": {
+                "ServerSideEncryptionConfiguration": [
+                  {
+                    "ServerSideEncryptionByDefault": {
+                      "SSEAlgorithm": "AES256"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "ServerlessDeploymentBucketPolicy": {
+            "Type": "AWS::S3::BucketPolicy",
+            "Properties": {
+              "Bucket": {
+                "Ref": "ServerlessDeploymentBucket"
+              },
+              "PolicyDocument": {
+                "Statement": [
+                  {
+                    "Action": "s3:*",
+                    "Effect": "Deny",
+                    "Principal": "*",
+                    "Resource": [
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "arn:",
+                            {
+                              "Ref": "AWS::Partition"
+                            },
+                            ":s3:::",
+                            {
+                              "Ref": "ServerlessDeploymentBucket"
+                            },
+                            "/*"
+                          ]
+                        ]
+                      },
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "arn:",
+                            {
+                              "Ref": "AWS::Partition"
+                            },
+                            ":s3:::",
+                            {
+                              "Ref": "ServerlessDeploymentBucket"
+                            }
+                          ]
+                        ]
+                      }
+                    ],
+                    "Condition": {
+                      "Bool": {
+                        "aws:SecureTransport": false
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "GetProductListLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/cloudx-backend-dev-getProductList"
+            }
+          },
+          "GetProductsByIdLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/cloudx-backend-dev-getProductsById"
+            }
+          },
+          "CreateProductLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/cloudx-backend-dev-createProduct"
+            }
+          },
+          "GetProductListLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/cloudx-backend/dev/1697389646304-2023-10-15T17:07:26.304Z/cloudx-backend.zip"
+              },
+              "Handler": "handler.getProductList",
+              "Runtime": "nodejs18.x",
+              "FunctionName": "cloudx-backend-dev-getProductList",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Description": "Lambda function to retrieve a product list.",
+              "Environment": {
+                "Variables": {
+                  "PRODUCTS_TABLE": "products",
+                  "STOCKS_TABLE": "stocks"
+                }
+              },
+              "Role": "arn:aws:iam::135024919331:role/lambda_dynamo_access"
+            },
+            "DependsOn": [
+              "GetProductListLogGroup"
+            ]
+          },
+          "GetProductsByIdLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/cloudx-backend/dev/1697389646304-2023-10-15T17:07:26.304Z/cloudx-backend.zip"
+              },
+              "Handler": "handler.getProductsById",
+              "Runtime": "nodejs18.x",
+              "FunctionName": "cloudx-backend-dev-getProductsById",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Description": "Retrieves a single product based on an id parameter.",
+              "Environment": {
+                "Variables": {
+                  "PRODUCTS_TABLE": "products",
+                  "STOCKS_TABLE": "stocks"
+                }
+              },
+              "Role": "arn:aws:iam::135024919331:role/lambda_dynamo_access"
+            },
+            "DependsOn": [
+              "GetProductsByIdLogGroup"
+            ]
+          },
+          "CreateProductLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/cloudx-backend/dev/1697389646304-2023-10-15T17:07:26.304Z/cloudx-backend.zip"
+              },
+              "Handler": "handler.createProduct",
+              "Runtime": "nodejs18.x",
+              "FunctionName": "cloudx-backend-dev-createProduct",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Description": "Creates a product based on the body.",
+              "Environment": {
+                "Variables": {
+                  "PRODUCTS_TABLE": "products",
+                  "STOCKS_TABLE": "stocks"
+                }
+              },
+              "Role": "arn:aws:iam::135024919331:role/lambda_dynamo_access"
+            },
+            "DependsOn": [
+              "CreateProductLogGroup"
+            ]
+          },
+          "GetProductListLambdaVersion71jfCOWKM2KKXuAlAmzpYidwWU3xY34ISW8US8RcU": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "GetProductListLambdaFunction"
+              },
+              "CodeSha256": "R0dmG+HJPuj6YmoOvMoMegv7waPtO6Vc/CHPi6+Q6/M=",
+              "Description": "Lambda function to retrieve a product list."
+            }
+          },
+          "GetProductListLambdaFunctionUrl": {
+            "Type": "AWS::Lambda::Url",
+            "Properties": {
+              "AuthType": "NONE",
+              "TargetFunctionArn": {
+                "Fn::GetAtt": [
+                  "GetProductListLambdaFunction",
+                  "Arn"
+                ]
+              }
+            }
+          },
+          "GetProductListLambdaPermissionFnUrl": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"GetProductListLambdaFunctionUrl\"][\"Properties\"][\"TargetFunctionArn\"]"
+              },
+              "Action": "lambda:InvokeFunctionUrl",
+              "Principal": "*",
+              "FunctionUrlAuthType": "NONE"
+            }
+          },
+          "GetProductsByIdLambdaVersionZpsSCsB0hNn5DqJEAbp0hpv7L9mF7l4Ak4b5h9MhoBE": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "GetProductsByIdLambdaFunction"
+              },
+              "CodeSha256": "R0dmG+HJPuj6YmoOvMoMegv7waPtO6Vc/CHPi6+Q6/M=",
+              "Description": "Retrieves a single product based on an id parameter."
+            }
+          },
+          "GetProductsByIdLambdaFunctionUrl": {
+            "Type": "AWS::Lambda::Url",
+            "Properties": {
+              "AuthType": "NONE",
+              "TargetFunctionArn": {
+                "Fn::GetAtt": [
+                  "GetProductsByIdLambdaFunction",
+                  "Arn"
+                ]
+              }
+            }
+          },
+          "GetProductsByIdLambdaPermissionFnUrl": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"GetProductsByIdLambdaFunctionUrl\"][\"Properties\"][\"TargetFunctionArn\"]"
+              },
+              "Action": "lambda:InvokeFunctionUrl",
+              "Principal": "*",
+              "FunctionUrlAuthType": "NONE"
+            }
+          },
+          "CreateProductLambdaVersiongIzxTq24lYpEAtw8GpQ5C6qQEsDR2srA4O5XouknR4w": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "CreateProductLambdaFunction"
+              },
+              "CodeSha256": "R0dmG+HJPuj6YmoOvMoMegv7waPtO6Vc/CHPi6+Q6/M=",
+              "Description": "Creates a product based on the body."
+            }
+          },
+          "CreateProductLambdaFunctionUrl": {
+            "Type": "AWS::Lambda::Url",
+            "Properties": {
+              "AuthType": "NONE",
+              "TargetFunctionArn": {
+                "Fn::GetAtt": [
+                  "CreateProductLambdaFunction",
+                  "Arn"
+                ]
+              }
+            }
+          },
+          "CreateProductLambdaPermissionFnUrl": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"CreateProductLambdaFunctionUrl\"][\"Properties\"][\"TargetFunctionArn\"]"
+              },
+              "Action": "lambda:InvokeFunctionUrl",
+              "Principal": "*",
+              "FunctionUrlAuthType": "NONE"
+            }
+          },
+          "HttpApi": {
+            "Type": "AWS::ApiGatewayV2::Api",
+            "Properties": {
+              "Name": "dev-cloudx-backend",
+              "ProtocolType": "HTTP",
+              "CorsConfiguration": {
+                "AllowHeaders": [
+                  "Content-Type",
+                  "X-Amz-Date",
+                  "Authorization",
+                  "X-Api-Key",
+                  "X-Amz-Security-Token",
+                  "X-Amz-User-Agent",
+                  "X-Amzn-Trace-Id"
+                ],
+                "AllowMethods": [
+                  "OPTIONS",
+                  "GET",
+                  "POST"
+                ],
+                "AllowOrigins": [
+                  "*"
+                ]
+              }
+            }
+          },
+          "HttpApiStage": {
+            "Type": "AWS::ApiGatewayV2::Stage",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "StageName": "$default",
+              "AutoDeploy": true,
+              "DefaultRouteSettings": {
+                "DetailedMetricsEnabled": false
+              }
+            }
+          },
+          "GetProductListLambdaPermissionHttpApi": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "GetProductListLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "HttpApi"
+                    },
+                    "/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "HttpApiIntegrationGetProductList": {
+            "Type": "AWS::ApiGatewayV2::Integration",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "IntegrationType": "AWS_PROXY",
+              "IntegrationUri": {
+                "$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"GetProductListLambdaPermissionHttpApi\"][\"Properties\"][\"FunctionName\"]"
+              },
+              "PayloadFormatVersion": "2.0",
+              "TimeoutInMillis": 30000
+            }
+          },
+          "HttpApiRouteGetProducts": {
+            "Type": "AWS::ApiGatewayV2::Route",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "RouteKey": "GET /products",
+              "Target": {
+                "Fn::Join": [
+                  "/",
+                  [
+                    "integrations",
+                    {
+                      "Ref": "HttpApiIntegrationGetProductList"
+                    }
+                  ]
+                ]
+              }
+            },
+            "DependsOn": "HttpApiIntegrationGetProductList"
+          },
+          "GetProductsByIdLambdaPermissionHttpApi": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "GetProductsByIdLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "HttpApi"
+                    },
+                    "/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "HttpApiIntegrationGetProductsById": {
+            "Type": "AWS::ApiGatewayV2::Integration",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "IntegrationType": "AWS_PROXY",
+              "IntegrationUri": {
+                "$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"GetProductsByIdLambdaPermissionHttpApi\"][\"Properties\"][\"FunctionName\"]"
+              },
+              "PayloadFormatVersion": "2.0",
+              "TimeoutInMillis": 30000
+            }
+          },
+          "HttpApiRouteGetProductsProductidVar": {
+            "Type": "AWS::ApiGatewayV2::Route",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "RouteKey": "GET /products/{productId}",
+              "Target": {
+                "Fn::Join": [
+                  "/",
+                  [
+                    "integrations",
+                    {
+                      "Ref": "HttpApiIntegrationGetProductsById"
+                    }
+                  ]
+                ]
+              }
+            },
+            "DependsOn": "HttpApiIntegrationGetProductsById"
+          },
+          "CreateProductLambdaPermissionHttpApi": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "CreateProductLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "HttpApi"
+                    },
+                    "/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "HttpApiIntegrationCreateProduct": {
+            "Type": "AWS::ApiGatewayV2::Integration",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "IntegrationType": "AWS_PROXY",
+              "IntegrationUri": {
+                "$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"CreateProductLambdaPermissionHttpApi\"][\"Properties\"][\"FunctionName\"]"
+              },
+              "PayloadFormatVersion": "2.0",
+              "TimeoutInMillis": 30000
+            }
+          },
+          "HttpApiRoutePostProducts": {
+            "Type": "AWS::ApiGatewayV2::Route",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "RouteKey": "POST /products",
+              "Target": {
+                "Fn::Join": [
+                  "/",
+                  [
+                    "integrations",
+                    {
+                      "Ref": "HttpApiIntegrationCreateProduct"
+                    }
+                  ]
+                ]
+              }
+            },
+            "DependsOn": "HttpApiIntegrationCreateProduct"
+          }
+        },
+        "Outputs": {
+          "ServerlessDeploymentBucketName": {
+            "Value": {
+              "Ref": "ServerlessDeploymentBucket"
+            },
+            "Export": {
+              "Name": "sls-cloudx-backend-dev-ServerlessDeploymentBucketName"
+            }
+          },
+          "GetProductListLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "GetProductListLambdaVersion71jfCOWKM2KKXuAlAmzpYidwWU3xY34ISW8US8RcU"
+            },
+            "Export": {
+              "Name": "sls-cloudx-backend-dev-GetProductListLambdaFunctionQualifiedArn"
+            }
+          },
+          "GetProductListLambdaFunctionUrl": {
+            "Description": "Lambda Function URL",
+            "Value": {
+              "Fn::GetAtt": [
+                "GetProductListLambdaFunctionUrl",
+                "FunctionUrl"
+              ]
+            },
+            "Export": {
+              "Name": "sls-cloudx-backend-dev-GetProductListLambdaFunctionUrl"
+            }
+          },
+          "GetProductsByIdLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "GetProductsByIdLambdaVersionZpsSCsB0hNn5DqJEAbp0hpv7L9mF7l4Ak4b5h9MhoBE"
+            },
+            "Export": {
+              "Name": "sls-cloudx-backend-dev-GetProductsByIdLambdaFunctionQualifiedArn"
+            }
+          },
+          "GetProductsByIdLambdaFunctionUrl": {
+            "Description": "Lambda Function URL",
+            "Value": {
+              "Fn::GetAtt": [
+                "GetProductsByIdLambdaFunctionUrl",
+                "FunctionUrl"
+              ]
+            },
+            "Export": {
+              "Name": "sls-cloudx-backend-dev-GetProductsByIdLambdaFunctionUrl"
+            }
+          },
+          "CreateProductLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "CreateProductLambdaVersiongIzxTq24lYpEAtw8GpQ5C6qQEsDR2srA4O5XouknR4w"
+            },
+            "Export": {
+              "Name": "sls-cloudx-backend-dev-CreateProductLambdaFunctionQualifiedArn"
+            }
+          },
+          "CreateProductLambdaFunctionUrl": {
+            "Description": "Lambda Function URL",
+            "Value": {
+              "Fn::GetAtt": [
+                "CreateProductLambdaFunctionUrl",
+                "FunctionUrl"
+              ]
+            },
+            "Export": {
+              "Name": "sls-cloudx-backend-dev-CreateProductLambdaFunctionUrl"
+            }
+          },
+          "HttpApiId": {
+            "Description": "Id of the HTTP API",
+            "Value": {
+              "Ref": "HttpApi"
+            },
+            "Export": {
+              "Name": "sls-cloudx-backend-dev-HttpApiId"
+            }
+          },
+          "HttpApiUrl": {
+            "Description": "URL of the HTTP API",
+            "Value": {
+              "Fn::Join": [
+                "",
+                [
+                  "https://",
+                  {
+                    "Ref": "HttpApi"
+                  },
+                  ".execute-api.",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ".",
+                  {
+                    "Ref": "AWS::URLSuffix"
+                  }
+                ]
+              ]
+            },
+            "Export": {
+              "Name": "sls-cloudx-backend-dev-HttpApiUrl"
+            }
+          }
+        }
+      },
+      "coreCloudFormationTemplate": {
+        "AWSTemplateFormatVersion": "2010-09-09",
+        "Description": "The AWS CloudFormation template for this Serverless application",
+        "Resources": {
+          "ServerlessDeploymentBucket": {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+              "BucketEncryption": {
+                "ServerSideEncryptionConfiguration": [
+                  {
+                    "ServerSideEncryptionByDefault": {
+                      "SSEAlgorithm": "AES256"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "ServerlessDeploymentBucketPolicy": {
+            "Type": "AWS::S3::BucketPolicy",
+            "Properties": {
+              "Bucket": {
+                "Ref": "ServerlessDeploymentBucket"
+              },
+              "PolicyDocument": {
+                "Statement": [
+                  {
+                    "Action": "s3:*",
+                    "Effect": "Deny",
+                    "Principal": "*",
+                    "Resource": [
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "arn:",
+                            {
+                              "Ref": "AWS::Partition"
+                            },
+                            ":s3:::",
+                            {
+                              "Ref": "ServerlessDeploymentBucket"
+                            },
+                            "/*"
+                          ]
+                        ]
+                      },
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "arn:",
+                            {
+                              "Ref": "AWS::Partition"
+                            },
+                            ":s3:::",
+                            {
+                              "Ref": "ServerlessDeploymentBucket"
+                            }
+                          ]
+                        ]
+                      }
+                    ],
+                    "Condition": {
+                      "Bool": {
+                        "aws:SecureTransport": false
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "Outputs": {
+          "ServerlessDeploymentBucketName": {
+            "Value": {
+              "Ref": "ServerlessDeploymentBucket"
+            }
+          }
+        }
+      },
+      "vpc": {}
+    },
+    "pluginsData": {},
+    "functions": {
+      "getProductList": {
+        "url": true,
+        "handler": "handler.getProductList",
+        "description": "Lambda function to retrieve a product list.",
+        "events": [
+          {
+            "httpApi": {
+              "path": "/products",
+              "method": "GET"
+            },
+            "resolvedMethod": "GET",
+            "resolvedPath": "/products"
+          }
+        ],
+        "name": "cloudx-backend-dev-getProductList",
+        "package": {},
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs18.x",
+        "vpc": {},
+        "versionLogicalId": "GetProductListLambdaVersion71jfCOWKM2KKXuAlAmzpYidwWU3xY34ISW8US8RcU"
+      },
+      "getProductsById": {
+        "url": true,
+        "handler": "handler.getProductsById",
+        "description": "Retrieves a single product based on an id parameter.",
+        "events": [
+          {
+            "httpApi": {
+              "path": "/products/{productId}",
+              "method": "GET"
+            },
+            "resolvedMethod": "GET",
+            "resolvedPath": "/products/{productId}"
+          }
+        ],
+        "name": "cloudx-backend-dev-getProductsById",
+        "package": {},
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs18.x",
+        "vpc": {},
+        "versionLogicalId": "GetProductsByIdLambdaVersionZpsSCsB0hNn5DqJEAbp0hpv7L9mF7l4Ak4b5h9MhoBE"
+      },
+      "createProduct": {
+        "url": true,
+        "handler": "handler.createProduct",
+        "description": "Creates a product based on the body.",
+        "events": [
+          {
+            "httpApi": {
+              "path": "/products",
+              "method": "POST"
+            },
+            "resolvedMethod": "POST",
+            "resolvedPath": "/products"
+          }
+        ],
+        "name": "cloudx-backend-dev-createProduct",
+        "package": {},
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs18.x",
+        "vpc": {},
+        "versionLogicalId": "CreateProductLambdaVersiongIzxTq24lYpEAtw8GpQ5C6qQEsDR2srA4O5XouknR4w"
+      }
+    },
+    "configValidationMode": "warn",
+    "serviceFilename": "serverless.yml",
+    "initialServerlessConfig": {
+      "service": "cloudx-backend",
+      "frameworkVersion": "3",
+      "provider": {
+        "$ref": "$[\"service\"][\"provider\"]"
+      },
+      "functions": {
+        "$ref": "$[\"service\"][\"functions\"]"
+      }
+    },
+    "layers": {},
+    "isDashboardMonitoringPreconfigured": false,
+    "artifact": "D:\\work\\cloudx-training-backend\\.serverless\\cloudx-backend.zip"
+  },
+  "package": {
+    "artifactDirectoryName": "serverless/cloudx-backend/dev/1697389646304-2023-10-15T17:07:26.304Z",
+    "artifact": "cloudx-backend.zip"
+  }
+}
