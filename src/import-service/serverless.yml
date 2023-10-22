@@ -1,10 +1,46 @@
 service: import-service
-frameworkVersion: '3'
+frameworkVersion: "3"
 
 provider:
   name: aws
   runtime: nodejs18.x
+  region: eu-central-1
+  # memorySize: 512
+  httpApi:
+    cors: true
+  iam:
+    role: arn:aws:iam::135024919331:role/lambda-s3-execution-access
+  environment:
+    IMPORT_BUCKET_NAME: cloudx-training-uploaded-bucket
+    FILE_NAME_PARAMETER: name
+
+layers:
+  CsvParser:
+    path: ./external-packages-layer
+    name: CSVP
+    description: CSV parse package layer
 
 functions:
-  function1:
-    handler: index.handler
+  importProductsFile:
+    url: true
+    handler: handler.getSignedProductImportUrl
+    description: Lambda function to generate a signed url for importing products.
+    events:
+      - httpApi:
+          path: /import
+          method: GET
+    layers:
+      - { Ref: CsvParserLambdaLayer }
+
+  importFileParser:
+    url: false
+    handler: handler.parseProductCsv
+    description: Lambda function that parses a csv file previously uploaded by importPorudctsFile and logs the result to CloudWatch.
+    events:
+      - s3:
+          bucket: ${self:provider.environment.IMPORT_BUCKET_NAME}
+          event: s3:ObjectCreated:*
+          rules:
+            - prefix: uploaded/
+    layers:
+      - { Ref: CsvParserLambdaLayer }

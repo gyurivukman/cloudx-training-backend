@@ -1,4 +1,4 @@
-service: cloudx-backend
+service: product-service
 frameworkVersion: "3"
 
 provider:

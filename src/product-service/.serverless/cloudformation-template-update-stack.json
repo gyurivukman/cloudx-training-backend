@@ -74,19 +74,19 @@
     "GetProductListLogGroup": {
       "Type": "AWS::Logs::LogGroup",
       "Properties": {
-        "LogGroupName": "/aws/lambda/cloudx-backend-dev-getProductList"
+        "LogGroupName": "/aws/lambda/product-service-dev-getProductList"
       }
     },
     "GetProductsByIdLogGroup": {
       "Type": "AWS::Logs::LogGroup",
       "Properties": {
-        "LogGroupName": "/aws/lambda/cloudx-backend-dev-getProductsById"
+        "LogGroupName": "/aws/lambda/product-service-dev-getProductsById"
       }
     },
     "CreateProductLogGroup": {
       "Type": "AWS::Logs::LogGroup",
       "Properties": {
-        "LogGroupName": "/aws/lambda/cloudx-backend-dev-createProduct"
+        "LogGroupName": "/aws/lambda/product-service-dev-createProduct"
       }
     },
     "GetProductListLambdaFunction": {
@@ -96,11 +96,11 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/cloudx-backend/dev/1697389646304-2023-10-15T17:07:26.304Z/cloudx-backend.zip"
+          "S3Key": "serverless/product-service/dev/1697980256918-2023-10-22T13:10:56.918Z/product-service.zip"
         },
         "Handler": "handler.getProductList",
         "Runtime": "nodejs18.x",
-        "FunctionName": "cloudx-backend-dev-getProductList",
+        "FunctionName": "product-service-dev-getProductList",
         "MemorySize": 1024,
         "Timeout": 6,
         "Description": "Lambda function to retrieve a product list.",
@@ -123,11 +123,11 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/cloudx-backend/dev/1697389646304-2023-10-15T17:07:26.304Z/cloudx-backend.zip"
+          "S3Key": "serverless/product-service/dev/1697980256918-2023-10-22T13:10:56.918Z/product-service.zip"
         },
         "Handler": "handler.getProductsById",
         "Runtime": "nodejs18.x",
-        "FunctionName": "cloudx-backend-dev-getProductsById",
+        "FunctionName": "product-service-dev-getProductsById",
         "MemorySize": 1024,
         "Timeout": 6,
         "Description": "Retrieves a single product based on an id parameter.",
@@ -150,11 +150,11 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/cloudx-backend/dev/1697389646304-2023-10-15T17:07:26.304Z/cloudx-backend.zip"
+          "S3Key": "serverless/product-service/dev/1697980256918-2023-10-22T13:10:56.918Z/product-service.zip"
         },
         "Handler": "handler.createProduct",
         "Runtime": "nodejs18.x",
-        "FunctionName": "cloudx-backend-dev-createProduct",
+        "FunctionName": "product-service-dev-createProduct",
         "MemorySize": 1024,
         "Timeout": 6,
         "Description": "Creates a product based on the body.",
@@ -170,14 +170,14 @@
         "CreateProductLogGroup"
       ]
     },
-    "GetProductListLambdaVersion71jfCOWKM2KKXuAlAmzpYidwWU3xY34ISW8US8RcU": {
+    "GetProductListLambdaVersionZRZ5Z4mYvaxAkRLoMtWyLAZtQpn6bZLrXCDoP1rqTE": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "GetProductListLambdaFunction"
         },
-        "CodeSha256": "R0dmG+HJPuj6YmoOvMoMegv7waPtO6Vc/CHPi6+Q6/M=",
+        "CodeSha256": "Y2sH94M0QHSFO2m79Tai9+NaXZ7QQgDXI2wXoktrin8=",
         "Description": "Lambda function to retrieve a product list."
       }
     },
@@ -207,14 +207,14 @@
         "FunctionUrlAuthType": "NONE"
       }
     },
-    "GetProductsByIdLambdaVersionZpsSCsB0hNn5DqJEAbp0hpv7L9mF7l4Ak4b5h9MhoBE": {
+    "GetProductsByIdLambdaVersionFPGl4WeMe117z7BbVS6zY34us8zTK7RJRiDT7DvrCU": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "GetProductsByIdLambdaFunction"
         },
-        "CodeSha256": "R0dmG+HJPuj6YmoOvMoMegv7waPtO6Vc/CHPi6+Q6/M=",
+        "CodeSha256": "Y2sH94M0QHSFO2m79Tai9+NaXZ7QQgDXI2wXoktrin8=",
         "Description": "Retrieves a single product based on an id parameter."
       }
     },
@@ -244,14 +244,14 @@
         "FunctionUrlAuthType": "NONE"
       }
     },
-    "CreateProductLambdaVersiongIzxTq24lYpEAtw8GpQ5C6qQEsDR2srA4O5XouknR4w": {
+    "CreateProductLambdaVersionrHepkcbMqO2jWuuwnK9AGV7T25EWBfAyYiR23zH2g": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "CreateProductLambdaFunction"
         },
-        "CodeSha256": "R0dmG+HJPuj6YmoOvMoMegv7waPtO6Vc/CHPi6+Q6/M=",
+        "CodeSha256": "Y2sH94M0QHSFO2m79Tai9+NaXZ7QQgDXI2wXoktrin8=",
         "Description": "Creates a product based on the body."
       }
     },
@@ -284,7 +284,7 @@
     "HttpApi": {
       "Type": "AWS::ApiGatewayV2::Api",
       "Properties": {
-        "Name": "dev-cloudx-backend",
+        "Name": "dev-product-service",
         "ProtocolType": "HTTP",
         "CorsConfiguration": {
           "AllowHeaders": [
@@ -552,16 +552,16 @@
         "Ref": "ServerlessDeploymentBucket"
       },
       "Export": {
-        "Name": "sls-cloudx-backend-dev-ServerlessDeploymentBucketName"
+        "Name": "sls-product-service-dev-ServerlessDeploymentBucketName"
       }
     },
     "GetProductListLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "GetProductListLambdaVersion71jfCOWKM2KKXuAlAmzpYidwWU3xY34ISW8US8RcU"
+        "Ref": "GetProductListLambdaVersionZRZ5Z4mYvaxAkRLoMtWyLAZtQpn6bZLrXCDoP1rqTE"
       },
       "Export": {
-        "Name": "sls-cloudx-backend-dev-GetProductListLambdaFunctionQualifiedArn"
+        "Name": "sls-product-service-dev-GetProductListLambdaFunctionQualifiedArn"
       }
     },
     "GetProductListLambdaFunctionUrl": {
@@ -573,16 +573,16 @@
         ]
       },
       "Export": {
-        "Name": "sls-cloudx-backend-dev-GetProductListLambdaFunctionUrl"
+        "Name": "sls-product-service-dev-GetProductListLambdaFunctionUrl"
       }
     },
     "GetProductsByIdLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "GetProductsByIdLambdaVersionZpsSCsB0hNn5DqJEAbp0hpv7L9mF7l4Ak4b5h9MhoBE"
+        "Ref": "GetProductsByIdLambdaVersionFPGl4WeMe117z7BbVS6zY34us8zTK7RJRiDT7DvrCU"
       },
       "Export": {
-        "Name": "sls-cloudx-backend-dev-GetProductsByIdLambdaFunctionQualifiedArn"
+        "Name": "sls-product-service-dev-GetProductsByIdLambdaFunctionQualifiedArn"
       }
     },
     "GetProductsByIdLambdaFunctionUrl": {
@@ -594,16 +594,16 @@
         ]
       },
       "Export": {
-        "Name": "sls-cloudx-backend-dev-GetProductsByIdLambdaFunctionUrl"
+        "Name": "sls-product-service-dev-GetProductsByIdLambdaFunctionUrl"
       }
     },
     "CreateProductLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "CreateProductLambdaVersiongIzxTq24lYpEAtw8GpQ5C6qQEsDR2srA4O5XouknR4w"
+        "Ref": "CreateProductLambdaVersionrHepkcbMqO2jWuuwnK9AGV7T25EWBfAyYiR23zH2g"
       },
       "Export": {
-        "Name": "sls-cloudx-backend-dev-CreateProductLambdaFunctionQualifiedArn"
+        "Name": "sls-product-service-dev-CreateProductLambdaFunctionQualifiedArn"
       }
     },
     "CreateProductLambdaFunctionUrl": {
@@ -615,7 +615,7 @@
         ]
       },
       "Export": {
-        "Name": "sls-cloudx-backend-dev-CreateProductLambdaFunctionUrl"
+        "Name": "sls-product-service-dev-CreateProductLambdaFunctionUrl"
       }
     },
     "HttpApiId": {
@@ -624,7 +624,7 @@
         "Ref": "HttpApi"
       },
       "Export": {
-        "Name": "sls-cloudx-backend-dev-HttpApiId"
+        "Name": "sls-product-service-dev-HttpApiId"
       }
     },
     "HttpApiUrl": {
@@ -649,7 +649,7 @@
         ]
       },
       "Export": {
-        "Name": "sls-cloudx-backend-dev-HttpApiUrl"
+        "Name": "sls-product-service-dev-HttpApiUrl"
       }
     }
   }
