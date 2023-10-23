@@ -9,10 +9,23 @@ provider:
   httpApi:
     cors: true
   iam:
-    role: arn:aws:iam::135024919331:role/lambda-s3-execution-access
+    role: arn:aws:iam::135024919331:role/file-parser-lambda-role
   environment:
     IMPORT_BUCKET_NAME: cloudx-training-uploaded-bucket
     FILE_NAME_PARAMETER: name
+  s3:
+    uploadsBucket:
+      name: ${self:provider.environment.IMPORT_BUCKET_NAME}
+      corsConfiguration:
+        CorsRules:
+          - AllowedHeaders:
+              - "*"
+            AllowedMethods:
+              - PUT
+              - OPTIONS
+            AllowedOrigins:
+              - https://http://d9t6syypfo0ho.cloudfront.net
+              - http://http://d9t6syypfo0ho.cloudfront.net
 
 layers:
   CsvParser:

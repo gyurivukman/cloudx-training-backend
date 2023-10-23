@@ -29,7 +29,7 @@ module.exports.getSignedProductImportUrl = async function (
 };
 
 module.exports.parseProductCsv = async function (event, context, callback) {
-  const Key = event.Records[0].object.key; //Can only handle 1 upload, too lazy to write a for loop and print all. Maybe even safer for my wallet this way with the cloudwatch logging!
+  const Key = event.Records[0].s3.object.key; //Can only handle 1 upload, too lazy to write a for loop and print all. Maybe even safer for my wallet this way with the cloudwatch logging!
 
   const command = new GetObjectCommand({
     Bucket: IMPORT_BUCKET_NAME,
