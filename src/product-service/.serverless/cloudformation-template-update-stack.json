@@ -102,7 +102,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/product-service/dev/1698598933972-2023-10-29T17:02:13.972Z/product-service.zip"
+          "S3Key": "serverless/product-service/dev/1698599271748-2023-10-29T17:07:51.748Z/product-service.zip"
         },
         "Handler": "handler.getProductList",
         "Runtime": "nodejs18.x",
@@ -129,7 +129,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/product-service/dev/1698598933972-2023-10-29T17:02:13.972Z/product-service.zip"
+          "S3Key": "serverless/product-service/dev/1698599271748-2023-10-29T17:07:51.748Z/product-service.zip"
         },
         "Handler": "handler.getProductsById",
         "Runtime": "nodejs18.x",
@@ -156,7 +156,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/product-service/dev/1698598933972-2023-10-29T17:02:13.972Z/product-service.zip"
+          "S3Key": "serverless/product-service/dev/1698599271748-2023-10-29T17:07:51.748Z/product-service.zip"
         },
         "Handler": "handler.createProduct",
         "Runtime": "nodejs18.x",
@@ -183,7 +183,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/product-service/dev/1698598933972-2023-10-29T17:02:13.972Z/product-service.zip"
+          "S3Key": "serverless/product-service/dev/1698599271748-2023-10-29T17:07:51.748Z/product-service.zip"
         },
         "Handler": "handler.catalogBatchProcess",
         "Runtime": "nodejs18.x",
@@ -628,10 +628,7 @@
         "Endpoint": "sereneplatypus@gmail.com",
         "Protocol": "email",
         "TopicArn": {
-          "Fn::GetAtt": [
-            "creteProductTopic",
-            "Arn"
-          ]
+          "Ref": "creteProductTopic"
         }
       }
     }

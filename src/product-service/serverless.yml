@@ -58,14 +58,11 @@ resources:
       Properties:
         MessageRetentionPeriod: 300
         VisibilityTimeout: 10
-    creteProductTopic:
+    createProductTopic:
       Type: AWS::SNS::Topic
     createProductSNSSub:
       Type: AWS::SNS::Subscription
       Properties:
         Endpoint: sereneplatypus@gmail.com
         Protocol: email
-        TopicArn:
-              Fn::GetAtt:
-                - creteProductTopic
-                - Arn
+        TopicArn: !Ref createProductTopic
