@@ -7,7 +7,7 @@ const {
   PutCommand,
 } = require("@aws-sdk/lib-dynamodb");
 const dbClient = new DynamoDBClient({ region: "eu-central-1" });
-const uuid = require("uuid");
+const {randomUUID} = require('crypto')
 
 const PRODUCTS_TABLE = process.env.PRODUCTS_TABLE;
 const STOCKS_TABLE = process.env.STOCKS_TABLE;
@@ -55,7 +55,7 @@ module.exports.getProductsById = async function (event, context, callback) {
 
 module.exports.createProduct = async function (event, context, callback) {
   const { title, description, count, price } = JSON.parse(event.body);
-  const generatedID = uuid.v4();
+  const generatedID = randomUUID();
 
   const putProduct = new PutCommand({
     TableName: PRODUCTS_TABLE,
