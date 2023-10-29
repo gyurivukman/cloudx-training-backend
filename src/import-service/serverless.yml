@@ -9,7 +9,7 @@ provider:
   httpApi:
     cors: true
   iam:
-    role: arn:aws:iam::135024919331:role/file-parser-lambda-role
+    role: arn:aws:iam::135024919331:role/everything-lambda-role
   environment:
     IMPORT_BUCKET_NAME: cloudx-training-uploaded-bucket
     FILE_NAME_PARAMETER: name
