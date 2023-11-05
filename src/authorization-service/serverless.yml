@@ -1,0 +1,12 @@
+service: authorization-service
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  environment:
+    gyurivukman: TEST_PASSWORD
+
+functions:
+  basicAuthorizer:
+    handler: handler.checkAuthorization

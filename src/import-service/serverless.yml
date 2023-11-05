@@ -22,7 +22,6 @@ provider:
               - "*"
             AllowedMethods:
               - PUT
-              - OPTIONS
             AllowedOrigins:
               - https://http://d9t6syypfo0ho.cloudfront.net
               - http://http://d9t6syypfo0ho.cloudfront.net
@@ -35,13 +34,15 @@ layers:
 
 functions:
   importProductsFile:
-    url: true
+    url:
+      cors: true
     handler: handler.getSignedProductImportUrl
     description: Lambda function to generate a signed url for importing products.
     events:
       - httpApi:
           path: /import
           method: GET
+          authorizer: arn:aws:lambda:eu-central-1:135024919331:function:authorization-service-dev-basicAuthorizer
     layers:
       - { Ref: CsvParserLambdaLayer }
 
