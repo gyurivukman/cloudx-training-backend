@@ -1,5 +1,5 @@
 service: product-service
-frameworkVersion: "3"
+frameworkVersion: 3
 
 provider:
   name: aws
@@ -9,7 +9,7 @@ provider:
   httpApi:
     cors: true
   iam:
-    role: arn:aws:iam::135024919331:role/lambda_dynamo_access
+    role: arn:aws:iam::135024919331:role/everything-lambda-role
   environment:
     PRODUCTS_TABLE: products
     STOCKS_TABLE: stocks
@@ -39,3 +39,30 @@ functions:
       - httpApi:
           path: /products
           method: POST
+  catalogBatchProcess:
+    handler: handler.catalogBatchProcess
+    description: Pushes products from the catalogItemsQueue into the DB.
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - catalogItemsQueue
+              - Arn
+          batchSize: 5
+          functionResponseType: ReportBatchItemFailures
+
+resources:
+  Resources:
+    catalogItemsQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        MessageRetentionPeriod: 300
+        VisibilityTimeout: 10
+    createProductTopic:
+      Type: AWS::SNS::Topic
+    createProductSNSSub:
+      Type: AWS::SNS::Subscription
+      Properties:
+        Endpoint: sereneplatypus@gmail.com
+        Protocol: email
+        TopicArn: !Ref createProductTopic
