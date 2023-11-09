@@ -1,11 +1,12 @@
 service: authorization-service
 frameworkVersion: "3"
+useDotEnv: true
 
 provider:
   name: aws
   runtime: nodejs18.x
   environment:
-    gyurivukman: TEST_PASSWORD
+    gyurivukman: ${env.gyurivukman}
 
 functions:
   basicAuthorizer:
