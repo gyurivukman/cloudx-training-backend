@@ -1,0 +1,13 @@
+service: authorization-service
+frameworkVersion: "3"
+useDotEnv: true
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  environment:
+    gyurivukman: ${env.gyurivukman}
+
+functions:
+  basicAuthorizer:
+    handler: handler.checkAuthorization
